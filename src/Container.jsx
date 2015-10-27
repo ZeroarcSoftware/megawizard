@@ -12,6 +12,9 @@ let Immutable = require('immutable');
 let ClassNames = require('classnames');
 let Autobind = require('autobind-decorator');
 
+// Local
+let Buttons = require('./Buttons');
+
 
 @Autobind
 export default class MegaWizardContainer extends React.Component {
@@ -71,32 +74,11 @@ export default class MegaWizardContainer extends React.Component {
   render() {
     let currentStepIndex = this.state.steps.findIndex(s => s === this.state.currentStep);
 
-    // Hide the next button on the last step
-    let nextButtonClasses = ClassNames('btn','btn-success','pull-right', {
-      'hidden': currentStepIndex === this.state.steps.count() - 1,
-    });
-
-    // Hide the complete button unless we are on the last step
-    let completeButtonClasses = ClassNames('btn','btn-danger','pull-right', {
-      'hidden': currentStepIndex < this.state.steps.count() - 1,
-    });
-
-    // If defined, execute a validator and check the result to determine if the step can advance
-    let mayAdvance = typeof this.state.currentStep.get('validator') === 'undefined' || this.state.currentStep.get('validator');
-
-    let buttons = (<div className='row' style={{marginTop: '2em'}}>
-      <div className='col-sm-12'>
-        <button className='btn btn-white' disabled={currentStepIndex === 0} onClick={this.handlePreviousStepClick} >
-          <i className='fa fa-arrow-left'></i> Previous
-        </button>
-        <button className={nextButtonClasses} onClick={this.handleNextStepClick} disabled={!mayAdvance} >
-          <i className='fa fa-arrow-right'></i> Next
-        </button>
-        <button className={completeButtonClasses} onClick={this.props.onComplete} disabled={!mayAdvance}>
-          Yes, I'm Sure
-        </button>
-      </div>
-    </div>);
+    // If defined, execute validators and check the result to determine if the step can advancex;
+    let nextStepAllowed = typeof this.state.currentStep.get('nextValidator') === 'undefined' || !!this.state.currentStep.get('nextValidator');
+    // In addition to the prevValidator, make sure this isn't the first step
+    let prevStepAllowed = currentStepIndex !== 0 &&
+      (typeof this.state.currentStep.get('prevValidator') === 'undefined' || !!this.state.currentStep.get('prevValidator'));
 
     // Build out summary column of steps
     let stepNames = this.state.steps.map((step,index) => {
@@ -120,7 +102,7 @@ export default class MegaWizardContainer extends React.Component {
     });
 
     return (
-      <div id='megawizard'>
+      <div className='megawizard'>
         <div className='row'>
           <div className='col-sm-4'>
             <ul className='list-group'>
@@ -136,7 +118,19 @@ export default class MegaWizardContainer extends React.Component {
             <div className='row' style={{marginTop: '1em'}}>
               {this.state.currentStep.get('display') && this.state.currentStep.get('display')()}
             </div>
-            {buttons}
+            <Buttons prevButtonText={this.state.currentStep.get('prevButtonText') || this.props.prevButtonText}
+              nextButtonText={this.state.currentStep.get('nextButtonText') || this.props.nextButtonText}
+              completeButtonText={this.state.currentStep.get('completeButtonText') || this.props.completeButtonText}
+              prevStepAllowed={prevStepAllowed}
+              nextStepAllowed={nextStepAllowed}
+              showCompleteButton={currentStepIndex === this.state.steps.count() -1}
+              onPreviousStepClick={this.handlePreviousStepClick}
+              onNextStepClick={this.handleNextStepClick}
+              onCompleteStepClick={this.props.onComplete}
+              prevButtonClasses={this.state.currentStep.get('prevButtonClasses') || this.props.prevButtonClasses}
+              nextButtonClasses={this.state.currentStep.get('nextButtonClasses') || this.props.nextButtonClasses}
+              completeButtonClasses={this.state.currentStep.get('completeButtonClasses') || this.props.completeButtonClasses}
+            />
           </div>
         </div>
       </div>
@@ -167,11 +161,31 @@ export default class MegaWizardContainer extends React.Component {
 }
 
 MegaWizardContainer.propTypes = {
-  // Wizard steps
+  // Required
+  // steps: Wizard steps config object
   steps: React.PropTypes.instanceOf(Immutable.List).isRequired,
+ // Optional override for complete button text
+  completeButtonText: React.PropTypes.string.isRequired,
+  // Optional override for next button text
+  nextButtonText: React.PropTypes.string.isRequired,
+  // Optional override for previous button text
+  prevButtonText: React.PropTypes.string.isRequired,
+
   // Optional
   // onComplete: called when the final wizard complete button is clicked
   onComplete: React.PropTypes.func,
-  // onStepChanged: called when any step changes, passes step index
+  // called when any step changes, passes step index
   onStepChanged: React.PropTypes.func,
+  // Optional override for previous button classes
+  prevButtonClasses: React.PropTypes.string,
+  // Optional override for next button classes
+  nextButtonClasses: React.PropTypes.string,
+  // Optional override for complete button classes
+  completeButtonClasses: React.PropTypes.string,
+ };
+
+MegaWizardContainer.defaultProps = {
+  completeButtonText: 'Done',
+  nextButtonText: 'Next',
+  prevButtonText: 'Previous',
 };

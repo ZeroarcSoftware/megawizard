@@ -27,7 +27,65 @@ To use MegaWizard:
 - Require it
 - Create step definition object and pass it to MegaWizard
 
-Contrived Example:
+### Component props
+MegaWizard has the following component props:
+
+#### Required:
+*steps* -- step definition object
+
+#### Optional
+*onStepChanged(currentStep)* -- function to call after a step is changed. Argument is the current step. Called before onEnter and onExit hooks.
+
+*onComplete()* -- function to call when complete button is clicked on last step. No arguments. Called before onExit hook.
+
+*prevButtonText* -- global text override to display for previous button. Default is "Previous".
+
+*nextButtonText* -- global text override to display for next button. Default is "Next".
+
+*completeButtonText* -- global text override to display for complete button. Default is "Done".
+
+*prevButtonClasses* -- global class override for previous button. If using, you must handle horizontal positioning yourself.
+
+*nextButtonClasses* -- global class override for next button. If using, you must handle horizontal positioning yourself.
+
+*completeButtonClasses* -- global class override for complete button. If using, you must handle horizontal positioning yourself.
+
+
+### Step definition options
+
+Steps definitions are a flexible way to get some fairly complex behaviors into the wizard. Since each step is defined indepentently, you can drive wizard behavior by using state/props from outisde the wizard. Step definitions may have any combination of the following options:
+
+#### Required:
+*name* -- unique indentifier for step
+
+*text* -- display name (shown on sidebar and header)
+
+#### Optional
+*onEnter* -- function to call when entering this step (fires when entering steps via next or previous movement). No arguments.
+
+*onExit* -- function to call when exiting this step (fires when leaving steps via next or previous movement). No arguments.
+
+*visible* -- entire step is hidden if this is *defined* and *false*. May truthy, falsy, or bool.
+
+*nextValidator* -- next button is disabled if this is *defined* and *false*. May truthy, falsy, or bool.
+
+*prevValidator* -- previous button is disabled if this is *defined* and *false*. May truthy, falsy, or bool.
+
+*prevButtonText* -- text to display for previous button. Default is "Previous".
+
+*nextButtonText* -- text to display for next button. Default is "Next".
+
+*completeButtonText* -- text to display for complete button. Default is "Done".
+
+*prevButtonClasses* -- class overrides for previous button. If using, you must handle horizontal positioning yourself.
+
+*nextButtonClasses* -- class overrides for next button. If using, you must handle horizontal positioning yourself.
+
+*completeButtonClasses* -- class overrides for complete button. If using, you must handle horizontal positioning yourself.
+
+*display* -- React element to display when step is active.
+
+### Contrived Example:
 
     render() {
       let stepDef = Immutable.fromJS([
@@ -35,7 +93,7 @@ Contrived Example:
           name: 'enterName',
           text: `Enter a name for widget ${this.state.widgetId}`,
           onEnter: this.props.hideWidgetList,
-          validator: this.state.nameInputText,
+          nextValidator: this.state.nameInputText,
           display: () => {
             return (
               <div>
@@ -48,7 +106,7 @@ Contrived Example:
           name: 'enterDescription',
           text: 'Enter a description',
           visible: this.state.descriptionRequired,
-          validator: this.state.descriptionText,
+          nextValidator: this.state.descriptionText,
           display: () => {
             return (
               <DescriptionForm description={this.state.descriptionText}
@@ -92,6 +150,8 @@ To watch for changes:
 
     npm run watch
 
-## Todo
-- Remove or make Bootstrap styling optional
-- Allow for replaceable/configurable sidebar
+## Issues
+Issues are tracked in [Github Issues](https://github.com/ZeroarcSoftware/megawizard/issues).
+
+## Changes
+Changes are tracked as [Github Releases](https://github.com/ZeroarcSoftware/megawizard/releases).

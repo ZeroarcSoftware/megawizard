@@ -1,6 +1,6 @@
 {
   "name": "megawizard",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "description": "Reactjs Step Wizard",
   "main": "dist/entry.js",
   "dependencies": {
@@ -11,7 +11,7 @@
     "react-addons-shallow-compare": "^0.14.0"
   },
   "devDependencies": {
-    "babel": "^5.8.23"
+    "babel": "^5.8.29"
   },
   "scripts": {
     "build": "$(npm bin)/babel --optional es7.decorators src/ -d dist/",
