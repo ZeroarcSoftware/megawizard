@@ -31,24 +31,24 @@ To use MegaWizard:
 MegaWizard has the following component props:
 
 #### Required:
-*steps* -- step definition object
+**steps** - step definition object
 
 #### Optional
-*onStepChanged(currentStep)* -- function to call after a step is changed. Argument is the current step. Called before onEnter and onExit hooks.
+**onStepChanged(currentStep)** - function to call after a step is changed. Argument is the current step. Called before onEnter and onExit hooks.
 
-*onComplete()* -- function to call when complete button is clicked on last step. No arguments. Called before onExit hook.
+**onComplete()** - function to call when complete button is clicked on last step. No arguments. Called before onExit hook.
 
-*prevButtonText* -- global text override to display for previous button. Default is "Previous".
+**prevButtonText** - global text override to display for previous button. Default is "Previous".
 
-*nextButtonText* -- global text override to display for next button. Default is "Next".
+**nextButtonText** - global text override to display for next button. Default is "Next".
 
-*completeButtonText* -- global text override to display for complete button. Default is "Done".
+**completeButtonText** - global text override to display for complete button. Default is "Done".
 
-*prevButtonClasses* -- global class override for previous button. If using, you must handle horizontal positioning yourself.
+**prevButtonClasses** - global class override for previous button. If using, you must handle horizontal positioning yourself.
 
-*nextButtonClasses* -- global class override for next button. If using, you must handle horizontal positioning yourself.
+**nextButtonClasses** - global class override for next button. If using, you must handle horizontal positioning yourself.
 
-*completeButtonClasses* -- global class override for complete button. If using, you must handle horizontal positioning yourself.
+**completeButtonClasses** - global class override for complete button. If using, you must handle horizontal positioning yourself.
 
 
 ### Step definition options
@@ -56,34 +56,34 @@ MegaWizard has the following component props:
 Steps definitions are a flexible way to get some fairly complex behaviors into the wizard. Since each step is defined indepentently, you can drive wizard behavior by using state/props from outisde the wizard. Step definitions may have any combination of the following options:
 
 #### Required:
-*name* -- unique indentifier for step
+**name** - unique indentifier for step
 
-*text* -- display name (shown on sidebar and header)
+**text** - display name (shown on sidebar and header)
 
 #### Optional
-*onEnter* -- function to call when entering this step (fires when entering steps via next or previous movement). No arguments.
+**onEnter** - function to call when entering this step (fires when entering steps via next or previous movement). No arguments.
 
-*onExit* -- function to call when exiting this step (fires when leaving steps via next or previous movement). No arguments.
+**onExit** - function to call when exiting this step (fires when leaving steps via next or previous movement). No arguments.
 
-*visible* -- entire step is hidden if this is *defined* and *false*. May truthy, falsy, or bool.
+**visible** - entire step is hidden if this is **defined** and **false**. May truthy, falsy, or bool.
 
-*nextValidator* -- next button is disabled if this is *defined* and *false*. May truthy, falsy, or bool.
+**nextValidator** - next button is disabled if this is **defined** and **false**. May truthy, falsy, or bool.
 
-*prevValidator* -- previous button is disabled if this is *defined* and *false*. May truthy, falsy, or bool.
+**prevValidator** - previous button is disabled if this is **defined** and **false**. May truthy, falsy, or bool.
 
-*prevButtonText* -- text to display for previous button. Default is "Previous".
+**prevButtonText** - text to display for previous button. Default is "Previous".
 
-*nextButtonText* -- text to display for next button. Default is "Next".
+**nextButtonText** - text to display for next button. Default is "Next".
 
-*completeButtonText* -- text to display for complete button. Default is "Done".
+**completeButtonText** - text to display for complete button. Default is "Done".
 
-*prevButtonClasses* -- class overrides for previous button. If using, you must handle horizontal positioning yourself.
+**prevButtonClasses** - class overrides for previous button. If using, you must handle horizontal positioning yourself.
 
-*nextButtonClasses* -- class overrides for next button. If using, you must handle horizontal positioning yourself.
+**nextButtonClasses** - class overrides for next button. If using, you must handle horizontal positioning yourself.
 
-*completeButtonClasses* -- class overrides for complete button. If using, you must handle horizontal positioning yourself.
+**completeButtonClasses** - class overrides for complete button. If using, you must handle horizontal positioning yourself.
 
-*display* -- React element to display when step is active.
+**display** - React element to display when step is active.
 
 ### Contrived Example:
 
