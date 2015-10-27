@@ -65,11 +65,11 @@ Steps definitions are a flexible way to get some fairly complex behaviors into t
 
 **onExit** - function to call when exiting this step (fires when leaving steps via next or previous movement). No arguments.
 
-**visible** - entire step is hidden if this is **defined** and **false**. May truthy, falsy, or bool.
+**visible** - entire step is hidden if this is *defined* and *false*. May truthy, falsy, or bool.
 
-**nextValidator** - next button is disabled if this is **defined** and **false**. May truthy, falsy, or bool.
+**nextValidator** - next button is disabled if this is *defined* and *false*. May truthy, falsy, or bool.
 
-**prevValidator** - previous button is disabled if this is **defined** and **false**. May truthy, falsy, or bool.
+**prevValidator** - previous button is disabled if this is *defined* and *false*. May truthy, falsy, or bool.
 
 **prevButtonText** - text to display for previous button. Default is "Previous".
 
