@@ -55,6 +55,14 @@ export default class MegaWizardContainer extends React.Component {
     this.state.currentStep.get('onExit') && this.state.currentStep.get('onExit')();
   }
 
+  // Check for pending step changes and fire optional callbacks
+  componentWillUpdate(nextProps, nextState) {
+    if (nextState.currentStep.get('name') !== this.state.currentStep.get('name')) {
+      // Fire global step change callback if it exists
+      this.props.onStepWillChange && this.props.onStepWillChange(this.state.currentStep);
+    }
+  }
+
   // Check for step changes and fire optional callbacks
   componentDidUpdate(prevProps, prevState) {
     if (prevState.currentStep.get('name') !== this.state.currentStep.get('name')) {
@@ -126,7 +134,7 @@ export default class MegaWizardContainer extends React.Component {
               showCompleteButton={currentStepIndex === this.state.steps.count() -1}
               onPreviousStepClick={this.handlePreviousStepClick}
               onNextStepClick={this.handleNextStepClick}
-              onCompleteStepClick={this.props.onComplete}
+              onCompleteStepClick={this.handleCompleteStepClick}
               prevButtonClasses={this.state.currentStep.get('prevButtonClasses') || this.props.prevButtonClasses}
               nextButtonClasses={this.state.currentStep.get('nextButtonClasses') || this.props.nextButtonClasses}
               completeButtonClasses={this.state.currentStep.get('completeButtonClasses') || this.props.completeButtonClasses}
@@ -157,6 +165,11 @@ export default class MegaWizardContainer extends React.Component {
     if (currentStepIndex < this.state.steps.count()) {
       this.setState({currentStep: this.state.steps.get(currentStepIndex + 1)});
     }
+  }
+
+  handleCompleteStepClick(e) {
+    e.stopPropagation();
+    this.props.onComplete(this.state.currentStep);
   }
 }
 

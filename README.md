@@ -36,6 +36,8 @@ MegaWizard has the following component props:
 #### Optional
 **onStepChanged(currentStep)** - function to call after a step is changed. Argument is the current step. Called before onEnter and onExit hooks.
 
+**onStepWillChange(currentStep)** - function to call before a step is changed. Argument is the current step.
+
 **onComplete()** - function to call when complete button is clicked on last step. No arguments. Called before onExit hook.
 
 **prevButtonText** - global text override to display for previous button. Default is "Previous".
