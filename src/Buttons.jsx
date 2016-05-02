@@ -7,11 +7,12 @@
 'use strict';
 
 // External
-let React = require('react');
-let ClassNames = require('classnames');
+import React from 'react';
+import ClassNames from 'classnames';
 
-let Buttons = (props) => {
-  let prevButtonClasses = props.prevButtonClasses || 'btn btn-white';
+
+const Buttons = (props) => {
+  const prevButtonClasses = props.prevButtonClasses || 'btn btn-white';
 
   let nextButtonClasses = props.nextButtonClasses || 'btn btn-success pull-right';
 

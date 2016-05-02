@@ -6,14 +6,14 @@
 'use strict';
 
 // External
-let React = require('react');
-let ReactShallowCompare = require('react-addons-shallow-compare');
-let Immutable = require('immutable');
-let ClassNames = require('classnames');
-let Autobind = require('autobind-decorator');
+import React from 'react';
+import ReactShallowCompare from 'react-addons-shallow-compare';
+import Immutable from 'immutable';
+import ClassNames from 'classnames';
+import Autobind from 'autobind-decorator';
 
 // Local
-let Buttons = require('./Buttons');
+import Buttons from './Buttons';
 
 
 @Autobind

@@ -5,7 +5,7 @@
 'use strict';
 
 // Local
-var Container = require('./Container');
+import Container from './Container';
 
 console.log('Like a robot wizard, but more Mega.');
 
