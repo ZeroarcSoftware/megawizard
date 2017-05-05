@@ -7,7 +7,6 @@ import * as Immutable from 'immutable';
 import ClassNames from 'classnames';
 import Autobind from 'autobind-decorator';
 
-// Local
 import Buttons from './Buttons';
 
 type Props = {
@@ -51,6 +50,9 @@ type Props = {
   // onComplete: called when the final wizard complete button is clicked
   onComplete?: (Immutable.Map<string,*>) => void,
 
+  // called when step index wants to change
+  onStepShouldChange?: (number) => void,
+
   // called when any step changes, passes step
   onStepChanged?: (Immutable.Map<string,*>) => void,
 
@@ -72,7 +74,7 @@ type Props = {
 
 type State = {
   currentStepIndex: number,
-  steps: Immutable.List<*>,
+  steps: Immutable.List<Immutable.Map<string, *>>,
 };
 
 @Autobind
@@ -91,8 +93,17 @@ export default class MegaWizardContainer extends React.Component {
 
     const visibleSteps = props.steps.filter(s => typeof s.get('visible') === 'undefined' || s.get('visible'));
 
+    let index = 0;
+    const propsIndex = props.index;
+    if (typeof propsIndex === 'number' && propsIndex < 0) {
+      index = visibleSteps.count() + propsIndex;
+    }
+    else if (typeof propsIndex === 'number') {
+      index = propsIndex;
+    }
+
     this.state = {
-      currentStepIndex: 0,
+      currentStepIndex: index,
       steps: visibleSteps,
     };
   }
@@ -108,51 +119,65 @@ export default class MegaWizardContainer extends React.Component {
       });
     }
 
-    if (nextProps.index !== this.props.index)
-      if (typeof nextProps.index === 'number')
-        this.setState({currentStepIndex: nextProps.index});
+    if (nextProps.index !== this.props.index) {
+      const nextIndex = nextProps.index;
+      if (typeof nextIndex === 'number') {
+        const index = nextIndex < 0 ? nextProps.steps.count() + nextIndex : nextIndex;
+        this.setState({ currentStepIndex: index });
+      }
+    }
   }
 
   // Check to see if we have an onEnter callback defined on first step
   componentDidMount() {
-    const currentStep = this.state.steps.get(this.state.currentStepIndex);
-    currentStep.get('onEnter') && currentStep.get('onEnter')();
+    const currentStep = this.state.steps.get(this.state.currentStepIndex, Immutable.Map());
+    const onEnter =  currentStep.get('onEnter');
+    if (typeof onEnter === 'function')
+      onEnter();
   }
 
   // Check to see if we have an onExit callback defined on current step
   // before unmounting
   componentWillUnmount() {
-    const currentStep = this.state.steps.get(this.state.currentStepIndex);
-    currentStep.get('onExit') && currentStep.get('onExit')();
+    const currentStep = this.state.steps.get(this.state.currentStepIndex, Immutable.Map());
+    const onExit = currentStep.get('onExit');
+    if (typeof onExit === 'function')
+      onExit();
   }
 
   // Check for step changes and fire optional callbacks
   componentDidUpdate(prevProps: Props, prevState: State) {
     if (prevState.currentStepIndex !== this.state.currentStepIndex) {
       const currentStepIndex = this.state.currentStepIndex;
-      const currentStep = this.state.steps.get(currentStepIndex);
+      const currentStep = this.state.steps.get(currentStepIndex, Immutable.Map());
 
       const prevStepIndex = prevState.currentStepIndex;
-      const prevStep = this.state.steps.get(prevStepIndex);
+      const prevStep = this.state.steps.get(prevStepIndex, Immutable.Map());
 
       // Fire global step change callback if it exists
-      this.props.onStepChanged && this.props.onStepChanged(currentStep);
+      currentStep && this.props.onStepChanged && this.props.onStepChanged(currentStep);
 
       // We went forward, fire next
       if (prevStepIndex > currentStepIndex)
-        this.props.onNextStepChanged && this.props.onNextStepChanged(currentStep);
+        currentStep && this.props.onNextStepChanged && this.props.onNextStepChanged(currentStep);
       // We went back, fire previous
       else
-        this.props.onPreviousStepChanged && this.props.onPreviousStepChanged(currentStep);
+        currentStep && this.props.onPreviousStepChanged && this.props.onPreviousStepChanged(currentStep);
 
       // Fire entry/exit steps if they exist for previous and current states
-      prevStep.get('onExit') && prevStep.get('onExit')();
-      currentStep.get('onEnter') && currentStep.get('onEnter')();
+      const onExit = prevStep.get('onExit');
+      if (typeof onExit === 'function')
+        onExit();
+
+      const onEnter = currentStep.get('onEnter');
+      if (typeof onEnter === 'function')
+        onEnter();
     }
   }
 
   render() {
     const currentStep = this.state.steps.get(this.state.currentStepIndex);
+    if (!currentStep) throw 'Invalid state, currentStep not found for index ' + this.state.currentStepIndex;
 
     // If defined, execute validators and check the result to determine if the step can advancex;
     const nextStepAllowed = typeof currentStep.get('nextValidator') === 'undefined' || !!currentStep.get('nextValidator');
@@ -174,12 +199,25 @@ export default class MegaWizardContainer extends React.Component {
         'label-success': index === this.state.currentStepIndex
       });
 
+      const jumpButton = currentStep.get('allowJumpFrom', false) && step.get('allowJumpTo', false)
+      ? (
+        <button className='btn btn-xs btn-white pull-right'
+          onClick={(e: SyntheticInputEvent) => this.handleJumpStepClick(e, index)}>
+          <i className='fa fa-fw fa-history'></i> Jump
+          </button>
+      )
+      : null;
+
       return (
         <li key={'stepName-' + index} className={nameClasses}>
-          <span className={numberClasses}>{index + 1}</span><span className='room-left'> {step.get('text')}</span>
+          <span className={numberClasses}>{index + 1}</span><span className='room-left'> {step.get('text')}</span> 
+          {jumpButton}
         </li>
       );
     });
+
+    const display = currentStep.get('display');
+    const onDisplay = typeof display === 'function' ? display() : null;
 
     return (
       <div className='megawizard'>
@@ -196,7 +234,7 @@ export default class MegaWizardContainer extends React.Component {
               </div>
             </div>
             <div className='row' style={{marginTop: '1em'}}>
-              {currentStep.get('display') && currentStep.get('display')()}
+              {onDisplay}
             </div>
             <Buttons 
               completeButtonClasses={currentStep.get('completeButtonClasses') || this.props.completeButtonClasses}
@@ -224,6 +262,21 @@ export default class MegaWizardContainer extends React.Component {
   //
   // Custom methods
   //
+  handleJumpStepClick(e: SyntheticInputEvent, index: number) {
+    e.stopPropagation();
+    const currentStep = this.state.steps.get(this.state.currentStepIndex);
+
+    // Call onStepWillChange and if falsy return value, abort step change
+    if (currentStep && this.props.onStepWillChange) {
+      const allowed = this.props.onStepWillChange(currentStep);
+      if (!allowed === false) return;
+    }
+
+    if (typeof this.props.onStepShouldChange === 'function')
+      this.props.onStepShouldChange(index);
+    else
+      this.setState({ currentStepIndex: index });
+  }
 
   handlePreviousStepClick(e: SyntheticInputEvent) {
     e.stopPropagation();
@@ -231,18 +284,20 @@ export default class MegaWizardContainer extends React.Component {
 
     if (this.state.currentStepIndex > 0) {
       // Call onStepWillChange and if falsy return value, abort step change
-      if (this.props.onStepWillChange) {
+      if (currentStep && this.props.onStepWillChange) {
         const allowed = this.props.onStepWillChange(currentStep);
         if (!allowed === false) return;
       }
 
       // Call onStepWillChangeToPrevious and if falsy return value, abort step change
-      if (this.props.onStepWillChangeToPrevious) {
+      if (currentStep && this.props.onStepWillChangeToPrevious) {
         const allowed = this.props.onStepWillChangeToPrevious(currentStep);
         if (!allowed === false) return;
       }
 
-      if (!this.props.index)
+      if (typeof this.props.onStepShouldChange === 'function')  
+        this.props.onStepShouldChange(this.state.currentStepIndex - 1);
+      else
         this.setState({currentStepIndex: this.state.currentStepIndex - 1});
     }
   }
@@ -253,18 +308,20 @@ export default class MegaWizardContainer extends React.Component {
 
     if (this.state.currentStepIndex < this.state.steps.count()) {
       // Call onStepWillChange and if falsy return value, abort step change
-      if (this.props.onStepWillChange) {
+      if (currentStep && this.props.onStepWillChange) {
         const allowed = this.props.onStepWillChange(currentStep);
         if (!allowed === false) return;
       }
 
       // Call onStepWillChangeToNext and if falsy return value, abort step change
-      if (this.props.onStepWillChangeToNext) {
+      if (currentStep && this.props.onStepWillChangeToNext) {
         const allowed = this.props.onStepWillChangeToNext(currentStep);
         if (!allowed === false) return;
       }
 
-      if (typeof this.props.index === 'undefined')  
+      if (typeof this.props.onStepShouldChange === 'function')  
+        this.props.onStepShouldChange(this.state.currentStepIndex + 1);
+      else
         this.setState({currentStepIndex: this.state.currentStepIndex + 1});
     }
   }
@@ -274,18 +331,18 @@ export default class MegaWizardContainer extends React.Component {
     const currentStep = this.state.steps.get(this.state.currentStepIndex);
 
     // Call onStepWillChange and if falsy return value, abort step change
-    if (this.props.onStepWillChange) {
+    if (currentStep && this.props.onStepWillChange) {
       const allowed = this.props.onStepWillChange(currentStep);
       if (!allowed === false) return;
     }
 
     // Call onStepWillChangeToNext and if falsy return value, abort step change
-    if (this.props.onStepWillChangeToNext) {
+    if (currentStep && this.props.onStepWillChangeToNext) {
       const allowed = this.props.onStepWillChangeToNext(currentStep);
       if (!allowed === false) return;
     }
 
-    this.props.onComplete && this.props.onComplete(currentStep);
+    currentStep && this.props.onComplete && this.props.onComplete(currentStep);
   }
 }
 

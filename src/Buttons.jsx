@@ -6,17 +6,17 @@ import React from 'react';
 import ClassNames from 'classnames';
 
 type Props = {
-  completeButtonClasses: string,
+  completeButtonClasses?: string,
   completeButtonIconClasses?: string,
   completeButtonText: string,
-  nextButtonClasses: string,
+  nextButtonClasses?: string,
   nextButtonIconClasses?: string,
   nextButtonText: string,
   nextStepAllowed: bool,
   onCompleteStepClick: (e: SyntheticInputEvent) => void,
   onNextStepClick: (e: SyntheticInputEvent) => void,
   onPreviousStepClick: (e: SyntheticInputEvent) => void,
-  prevButtonClasses: string,
+  prevButtonClasses?: string,
   prevButtonIconClasses?: string,
   prevButtonText: string,
   prevStepAllowed: bool,
@@ -25,10 +25,10 @@ type Props = {
 
 const Buttons = ({
   showCompleteButton = true,
-  completeButtonClasses = 'btn btn-danger pull-right', 
+  completeButtonClasses = 'btn btn-danger', 
   completeButtonIconClasses = 'fa fa-check',
   completeButtonText,
-  nextButtonClasses = 'btn btn-white pull-right', 
+  nextButtonClasses = 'btn btn-white', 
   nextButtonIconClasses = 'fa fa-arrow-right',
   nextButtonText,
   nextStepAllowed,
@@ -51,19 +51,23 @@ const Buttons = ({
     'hidden': !showCompleteButton
   })
 
-  return (<div className='row' style={{marginTop: '2em'}}>
-    <div className='col-sm-12'>
-      <button className={prevButtonClasses} disabled={!prevStepAllowed} onClick={onPreviousStepClick}>
-        <i className={prevButtonIconClasses}></i> {prevButtonText}
-      </button>
-      <button className={_nextButtonClasses} disabled={!nextStepAllowed} onClick={onNextStepClick}>
-        <i className={nextButtonIconClasses}></i> {nextButtonText}
-      </button>
-      <button className={_completeButtonClasses} disabled={!nextStepAllowed} onClick={onCompleteStepClick}>
-        <i className={completeButtonIconClasses}></i> {completeButtonText}
-      </button>
+  return (
+    <div className='row' style={{ marginTop: '2em' }}>
+      <div className='col-sm-6'>
+        <button className={prevButtonClasses} disabled={!prevStepAllowed} onClick={onPreviousStepClick}>
+          <i className={prevButtonIconClasses}></i> {prevButtonText}
+        </button>
+      </div>
+      <div className='col-sm-6 text-right'>
+        <button className={_nextButtonClasses} disabled={!nextStepAllowed} onClick={onNextStepClick}>
+          <i className={nextButtonIconClasses}></i> {nextButtonText}
+        </button>
+        <button className={_completeButtonClasses} disabled={!nextStepAllowed} onClick={onCompleteStepClick}>
+          <i className={completeButtonIconClasses}></i> {completeButtonText}
+        </button>
+      </div>
     </div>
-  </div>)
+  );
 };
 
 export default Buttons;
