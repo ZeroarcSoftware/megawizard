@@ -269,7 +269,7 @@ export default class MegaWizardContainer extends React.Component {
     // Call onStepWillChange and if falsy return value, abort step change
     if (currentStep && this.props.onStepWillChange) {
       const allowed = this.props.onStepWillChange(currentStep);
-      if (!allowed === false) return;
+      if (allowed === false) return;
     }
 
     if (typeof this.props.onStepShouldChange === 'function')
@@ -286,13 +286,13 @@ export default class MegaWizardContainer extends React.Component {
       // Call onStepWillChange and if falsy return value, abort step change
       if (currentStep && this.props.onStepWillChange) {
         const allowed = this.props.onStepWillChange(currentStep);
-        if (!allowed === false) return;
+        if (allowed === false) return;
       }
 
       // Call onStepWillChangeToPrevious and if falsy return value, abort step change
       if (currentStep && this.props.onStepWillChangeToPrevious) {
         const allowed = this.props.onStepWillChangeToPrevious(currentStep);
-        if (!allowed === false) return;
+        if (allowed === false) return;
       }
 
       if (typeof this.props.onStepShouldChange === 'function')  
@@ -310,13 +310,13 @@ export default class MegaWizardContainer extends React.Component {
       // Call onStepWillChange and if falsy return value, abort step change
       if (currentStep && this.props.onStepWillChange) {
         const allowed = this.props.onStepWillChange(currentStep);
-        if (!allowed === false) return;
+        if (allowed === false) return;
       }
 
       // Call onStepWillChangeToNext and if falsy return value, abort step change
       if (currentStep && this.props.onStepWillChangeToNext) {
         const allowed = this.props.onStepWillChangeToNext(currentStep);
-        if (!allowed === false) return;
+        if (allowed === false) return;
       }
 
       if (typeof this.props.onStepShouldChange === 'function')  
@@ -333,13 +333,13 @@ export default class MegaWizardContainer extends React.Component {
     // Call onStepWillChange and if falsy return value, abort step change
     if (currentStep && this.props.onStepWillChange) {
       const allowed = this.props.onStepWillChange(currentStep);
-      if (!allowed === false) return;
+      if (allowed === false) return;
     }
 
     // Call onStepWillChangeToNext and if falsy return value, abort step change
     if (currentStep && this.props.onStepWillChangeToNext) {
       const allowed = this.props.onStepWillChangeToNext(currentStep);
-      if (!allowed === false) return;
+      if (allowed === false) return;
     }
 
     currentStep && this.props.onComplete && this.props.onComplete(currentStep);
