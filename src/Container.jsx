@@ -1,5 +1,5 @@
 // @flow
-// MegaWizard - Copyright 2017 Zeroarc Software, LLC
+// MegaWizard - Copyright 2018 Zeroarc Software, LLC
 'use strict';
 
 import React from 'react';
@@ -78,10 +78,7 @@ type State = {
 };
 
 @Autobind
-export default class MegaWizardContainer extends React.Component {
-  props: Props;
-  state: State;
-
+export default class MegaWizardContainer extends React.Component<Props,State> {
   static defaultProps: {
     completeButtonText: string,
     nextButtonText: string,
@@ -202,7 +199,7 @@ export default class MegaWizardContainer extends React.Component {
       const jumpButton = currentStep.get('allowJumpFrom', false) && step.get('allowJumpTo', false)
       ? (
         <button className='btn btn-xs btn-white pull-right'
-          onClick={(e: SyntheticInputEvent) => this.handleJumpStepClick(e, index)}>
+          onClick={(e: SyntheticInputEvent<*>) => this.handleJumpStepClick(e, index)}>
           <i className='fa fa-fw fa-history'></i> Jump
           </button>
       )
@@ -262,7 +259,7 @@ export default class MegaWizardContainer extends React.Component {
   //
   // Custom methods
   //
-  handleJumpStepClick(e: SyntheticInputEvent, index: number) {
+  handleJumpStepClick(e: SyntheticInputEvent<*>, index: number) {
     e.stopPropagation();
     const currentStep = this.state.steps.get(this.state.currentStepIndex);
 
@@ -278,7 +275,7 @@ export default class MegaWizardContainer extends React.Component {
       this.setState({ currentStepIndex: index });
   }
 
-  handlePreviousStepClick(e: SyntheticInputEvent) {
+  handlePreviousStepClick(e: SyntheticInputEvent<*>) {
     e.stopPropagation();
     const currentStep = this.state.steps.get(this.state.currentStepIndex);
 
@@ -302,7 +299,7 @@ export default class MegaWizardContainer extends React.Component {
     }
   }
 
-  handleNextStepClick(e: SyntheticInputEvent) {
+  handleNextStepClick(e: SyntheticInputEvent<*>) {
     e.stopPropagation();
     const currentStep = this.state.steps.get(this.state.currentStepIndex);
 
@@ -326,7 +323,7 @@ export default class MegaWizardContainer extends React.Component {
     }
   }
 
-  handleCompleteStepClick(e: SyntheticInputEvent) {
+  handleCompleteStepClick(e: SyntheticInputEvent<*>) {
     e.stopPropagation();
     const currentStep = this.state.steps.get(this.state.currentStepIndex);
 
