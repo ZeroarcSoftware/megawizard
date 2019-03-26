@@ -25,40 +25,40 @@ type Props = {
 
 const Buttons = ({
   showCompleteButton = true,
-  completeButtonClasses = 'btn btn-danger', 
-  completeButtonIconClasses = 'fa fa-check',
+  completeButtonClasses = 'btn btn-outline-danger', 
+  completeButtonIconClasses = 'far fa-check',
   completeButtonText,
-  nextButtonClasses = 'btn btn-white', 
-  nextButtonIconClasses = 'fa fa-arrow-right',
+  nextButtonClasses = 'btn btn-outline-secondary', 
+  nextButtonIconClasses = 'far fa-arrow-right',
   nextButtonText,
   nextStepAllowed,
   onCompleteStepClick,
   onNextStepClick,
   onPreviousStepClick,
-  prevButtonClasses = 'btn btn-white', 
-  prevButtonIconClasses = 'fa fa-arrow-left', 
+  prevButtonClasses = 'btn btn-outline-secondary', 
+  prevButtonIconClasses = 'far fa-arrow-left', 
   prevButtonText,
   prevStepAllowed,
 }: Props) => {
 
   const _nextButtonClasses = ClassNames(nextButtonClasses, {
     // Hide the next button on the last step
-    'hidden': showCompleteButton
+    'd-none': showCompleteButton
   })
 
   const _completeButtonClasses = ClassNames(completeButtonClasses, {
     // Hide the complete button unless we are on the last step
-    'hidden': !showCompleteButton
+    'd-none': !showCompleteButton
   })
 
   return (
-    <div className='row' style={{ marginTop: '2em' }}>
-      <div className='col-sm-6'>
+    <div className='row justify-content-between'>
+      <div className='col'>
         <button className={prevButtonClasses} disabled={!prevStepAllowed} onClick={onPreviousStepClick}>
           <i className={prevButtonIconClasses}></i> {prevButtonText}
         </button>
       </div>
-      <div className='col-sm-6 text-right'>
+      <div className='col text-right'>
         <button className={_nextButtonClasses} disabled={!nextStepAllowed} onClick={onNextStepClick}>
           <i className={nextButtonIconClasses}></i> {nextButtonText}
         </button>

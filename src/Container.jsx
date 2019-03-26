@@ -189,18 +189,18 @@ export default class MegaWizardContainer extends React.Component<Props,State> {
         'text-bold': index === this.state.currentStepIndex
       });
 
-      // Current step has success label, previous steps are primary
+      // Current step has success badge, previous steps are primary
       // future steps are default
-      const numberClasses = ClassNames('label', {
-        'label-primary': index < this.state.currentStepIndex,
-        'label-success': index === this.state.currentStepIndex
+      const numberClasses = ClassNames('badge', {
+        'badge-primary': index < this.state.currentStepIndex,
+        'badge-success': index === this.state.currentStepIndex
       });
 
       const jumpButton = currentStep.get('allowJumpFrom', false) && step.get('allowJumpTo', false)
       ? (
-        <button className='btn btn-xs btn-white pull-right'
+        <button className='btn btn-sm btn-secondary pull-right'
           onClick={(e: SyntheticInputEvent<*>) => this.handleJumpStepClick(e, index)}>
-          <i className='fa fa-fw fa-history'></i> Jump
+          <i className='far fa-fw fa-history'></i> Jump
           </button>
       )
       : null;
@@ -219,18 +219,18 @@ export default class MegaWizardContainer extends React.Component<Props,State> {
     return (
       <div className='megawizard'>
         <div className='row'>
-          <div className='col-sm-4'>
+          <div className='col-4'>
             <ul className='list-group'>
               {stepNames}
             </ul>
           </div>
-          <div className='col-sm-8'>
+          <div className='col'>
             <div className='row'>
-              <div className='col-sm-12 text-center'>
+              <div className='col-12 text-center'>
                 <h2>{this.state.currentStepIndex + 1}. {currentStep.get('text')}</h2>
               </div>
             </div>
-            <div className='row' style={{marginTop: '1em'}}>
+            <div className='row mt-1'>
               {onDisplay}
             </div>
             <Buttons 
