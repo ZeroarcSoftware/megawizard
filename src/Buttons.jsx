@@ -52,7 +52,7 @@ const Buttons = ({
   })
 
   return (
-    <div className='row justify-content-between'>
+    <div className='row justify-content-between align-items-end' style={{minHeight: '200px'}}>
       <div className='col'>
         <button className={prevButtonClasses} disabled={!prevStepAllowed} onClick={onPreviousStepClick}>
           <i className={prevButtonIconClasses}></i> {prevButtonText}

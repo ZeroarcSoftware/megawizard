@@ -192,8 +192,9 @@ export default class MegaWizardContainer extends React.Component<Props,State> {
       // Current step has success badge, previous steps are primary
       // future steps are default
       const numberClasses = ClassNames('badge', {
-        'badge-primary': index < this.state.currentStepIndex,
-        'badge-success': index === this.state.currentStepIndex
+        'badge-success': index < this.state.currentStepIndex,
+        'badge-primary': index === this.state.currentStepIndex,
+        'badge-light': index > this.state.currentStepIndex,
       });
 
       const jumpButton = currentStep.get('allowJumpFrom', false) && step.get('allowJumpTo', false)
@@ -207,7 +208,7 @@ export default class MegaWizardContainer extends React.Component<Props,State> {
 
       return (
         <li key={'stepName-' + index} className={nameClasses}>
-          <span className={numberClasses}>{index + 1}</span><span className='room-left'> {step.get('text')}</span> 
+          <span className='mr-2' style={{fontSize: '1.5em'}}><span className={numberClasses}>&nbsp;{index + 1}&nbsp;</span></span> {step.get('text')}
           {jumpButton}
         </li>
       );
@@ -230,7 +231,7 @@ export default class MegaWizardContainer extends React.Component<Props,State> {
                 <h2>{this.state.currentStepIndex + 1}. {currentStep.get('text')}</h2>
               </div>
             </div>
-            <div className='row mt-1'>
+            <div className='row mt-1 mb-4'>
               {onDisplay}
             </div>
             <Buttons 
