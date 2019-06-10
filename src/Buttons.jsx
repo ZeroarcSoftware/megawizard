@@ -6,6 +6,10 @@ import React from 'react';
 import ClassNames from 'classnames';
 
 type Props = {
+  cancelAllowed: bool,
+  cancelButtonClasses?: string,
+  cancelButtonIconClasses?: string,
+  cancelButtonText: string,
   completeButtonClasses?: string,
   completeButtonIconClasses?: string,
   completeButtonText: string,
@@ -13,6 +17,7 @@ type Props = {
   nextButtonIconClasses?: string,
   nextButtonText: string,
   nextStepAllowed: bool,
+  onCancelClick: (e: SyntheticInputEvent<*>) => void,
   onCompleteStepClick: (e: SyntheticInputEvent<*>) => void,
   onNextStepClick: (e: SyntheticInputEvent<*>) => void,
   onPreviousStepClick: (e: SyntheticInputEvent<*>) => void,
@@ -24,21 +29,26 @@ type Props = {
 };
 
 const Buttons = ({
-  showCompleteButton = true,
-  completeButtonClasses = 'btn btn-outline-danger', 
+  cancelAllowed,
+  cancelButtonClasses = 'btn btn-outline-danger',
+  cancelButtonIconClasses = 'far fa-times',
+  cancelButtonText,
+  completeButtonClasses = 'btn btn-outline-success',
   completeButtonIconClasses = 'far fa-check',
   completeButtonText,
-  nextButtonClasses = 'btn btn-outline-secondary', 
+  nextButtonClasses = 'btn btn-outline-primary',
   nextButtonIconClasses = 'far fa-arrow-right',
   nextButtonText,
   nextStepAllowed,
+  onCancelClick,
   onCompleteStepClick,
   onNextStepClick,
   onPreviousStepClick,
-  prevButtonClasses = 'btn btn-outline-secondary', 
-  prevButtonIconClasses = 'far fa-arrow-left', 
+  prevButtonClasses = 'btn btn-outline-secondary',
+  prevButtonIconClasses = 'far fa-arrow-left',
   prevButtonText,
   prevStepAllowed,
+  showCompleteButton = true,
 }: Props) => {
 
   const _nextButtonClasses = ClassNames(nextButtonClasses, {
@@ -52,20 +62,19 @@ const Buttons = ({
   })
 
   return (
-    <div className='row justify-content-between align-items-end' style={{minHeight: '200px'}}>
-      <div className='col'>
-        <button className={prevButtonClasses} disabled={!prevStepAllowed} onClick={onPreviousStepClick}>
-          <i className={prevButtonIconClasses}></i> {prevButtonText}
-        </button>
-      </div>
-      <div className='col text-right'>
-        <button className={_nextButtonClasses} disabled={!nextStepAllowed} onClick={onNextStepClick}>
-          <i className={nextButtonIconClasses}></i> {nextButtonText}
-        </button>
-        <button className={_completeButtonClasses} disabled={!nextStepAllowed} onClick={onCompleteStepClick}>
-          <i className={completeButtonIconClasses}></i> {completeButtonText}
-        </button>
-      </div>
+    <div className='d-flex justify-content-between align-items-end mt-3'>
+      <button className={`mr-auto ${cancelButtonClasses}`} disabled={!cancelAllowed} onClick={onCancelClick}>
+        <i className={cancelButtonIconClasses}></i> {cancelButtonText}
+      </button>
+      <button className={prevButtonClasses} disabled={!prevStepAllowed} onClick={onPreviousStepClick}>
+        <i className={prevButtonIconClasses}></i> {prevButtonText}
+      </button>
+      <button className={`ml-3 ${_nextButtonClasses}`} disabled={!nextStepAllowed} onClick={onNextStepClick}>
+        <i className={nextButtonIconClasses}></i> {nextButtonText}
+      </button>
+      <button className={`ml-3 ${_completeButtonClasses}`} disabled={!nextStepAllowed} onClick={onCompleteStepClick}>
+        <i className={completeButtonIconClasses}></i> {completeButtonText}
+      </button>
     </div>
   );
 };

@@ -16,6 +16,12 @@ type Props = {
   
   // Optional
 
+  // Defaults to true. If false, cancel button is not visible
+  cancelAllowed: bool,
+  
+  // Override for complete button text
+  cancelButtonText: string,
+
   // Override for complete button text
   completeButtonText: string,
 
@@ -47,6 +53,9 @@ type Props = {
   // Optional override for previous button icon classes
   prevButtonIconClasses?: string,
 
+  // onCancel: called when the cancel button is clicked. If not provided, cancel will not be allowed
+  onCancel?: (Immutable.Map<string,*>) => void,
+  
   // onComplete: called when the final wizard complete button is clicked
   onComplete?: (Immutable.Map<string,*>) => void,
 
@@ -234,25 +243,28 @@ export default class MegaWizardContainer extends React.Component<Props,State> {
             <div className='row mt-1 mb-4'>
               {onDisplay}
             </div>
-            <Buttons 
-              completeButtonClasses={currentStep.get('completeButtonClasses') || this.props.completeButtonClasses}
-              completeButtonIconClasses={currentStep.get('completeButtonIconClasses') || this.props.completeButtonIconClasses}
-              completeButtonText={currentStep.get('completeButtonText') || this.props.completeButtonText}
-              nextStepAllowed={nextStepAllowed}
-              nextButtonClasses={currentStep.get('nextButtonClasses') || this.props.nextButtonClasses}
-              nextButtonIconClasses={currentStep.get('nextButtonIconClasses') || this.props.nextButtonIconClasses}
-              nextButtonText={currentStep.get('nextButtonText') || this.props.nextButtonText}
-              onPreviousStepClick={this.handlePreviousStepClick}
-              onNextStepClick={this.handleNextStepClick}
-              onCompleteStepClick={this.handleCompleteStepClick}
-              prevStepAllowed={prevStepAllowed}
-              prevButtonClasses={currentStep.get('prevButtonClasses') || this.props.prevButtonClasses}
-              prevButtonIconClasses={currentStep.get('prevButtonIconClasses') || this.props.prevButtonIconClasses}
-              prevButtonText={currentStep.get('prevButtonText') || this.props.prevButtonText}
-              showCompleteButton={this.state.currentStepIndex === this.state.steps.count() -1}
-            />
           </div>
         </div>
+        <Buttons 
+          cancelAllowed={this.props.cancelAllowed}
+          cancelButtonText={this.props.cancelButtonText}
+          completeButtonClasses={currentStep.get('completeButtonClasses') || this.props.completeButtonClasses}
+          completeButtonIconClasses={currentStep.get('completeButtonIconClasses') || this.props.completeButtonIconClasses}
+          completeButtonText={currentStep.get('completeButtonText') || this.props.completeButtonText}
+          nextStepAllowed={nextStepAllowed}
+          nextButtonClasses={currentStep.get('nextButtonClasses') || this.props.nextButtonClasses}
+          nextButtonIconClasses={currentStep.get('nextButtonIconClasses') || this.props.nextButtonIconClasses}
+          nextButtonText={currentStep.get('nextButtonText') || this.props.nextButtonText}
+          onPreviousStepClick={this.handlePreviousStepClick}
+          onCancelClick={this.handleCancelClick}
+          onCompleteStepClick={this.handleCompleteStepClick}
+          onNextStepClick={this.handleNextStepClick}
+          prevStepAllowed={prevStepAllowed}
+          prevButtonClasses={currentStep.get('prevButtonClasses') || this.props.prevButtonClasses}
+          prevButtonIconClasses={currentStep.get('prevButtonIconClasses') || this.props.prevButtonIconClasses}
+          prevButtonText={currentStep.get('prevButtonText') || this.props.prevButtonText}
+          showCompleteButton={this.state.currentStepIndex === this.state.steps.count() -1}
+        />
       </div>
     );
   }
@@ -324,6 +336,14 @@ export default class MegaWizardContainer extends React.Component<Props,State> {
     }
   }
 
+  handleCancelClick(e: SyntheticInputEvent<*>) {
+    e.stopPropagation();
+    const currentStep = this.state.steps.get(this.state.currentStepIndex);
+
+    if (currentStep && this.props.onCancel)
+      this.props.onCancel(currentStep);
+  }
+
   handleCompleteStepClick(e: SyntheticInputEvent<*>) {
     e.stopPropagation();
     const currentStep = this.state.steps.get(this.state.currentStepIndex);
@@ -345,6 +365,8 @@ export default class MegaWizardContainer extends React.Component<Props,State> {
 }
 
 MegaWizardContainer.defaultProps = {
+  cancelAllowed: true,
+  cancelButtonText: 'Cancel',
   completeButtonText: 'Done',
   nextButtonText: 'Next',
   prevButtonText: 'Previous',
