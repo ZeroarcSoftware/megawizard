@@ -240,7 +240,7 @@ export default class MegaWizardContainer extends React.Component<Props,State> {
                 <h2>{this.state.currentStepIndex + 1}. {currentStep.get('text')}</h2>
               </div>
             </div>
-            <div className='row mt-1 mb-4'>
+            <div className='row mt-1 mb-4 justify-content-center'>
               {onDisplay}
             </div>
           </div>
