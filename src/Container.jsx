@@ -116,23 +116,41 @@ export default class MegaWizardContainer extends React.Component<Props,State> {
 
   // Because we have steps in state, we need watch for updates
   // and re-filter
-  componentWillReceiveProps(nextProps: Props) {
-    if (nextProps.steps !== this.props.steps) {
-      const visibleSteps = nextProps.steps.filter(s => typeof s.get('visible') === 'undefined' || s.get('visible'));
+  static getDerivedStateFromProps(props: Props, state: State) {
+    if (props.steps !== state.steps) {
+      const visibleSteps = props.steps.filter(s => typeof s.get('visible') === 'undefined' || s.get('visible'));
 
-      this.setState({
+      return ({
         steps: visibleSteps,
       });
     }
 
-    if (nextProps.index !== this.props.index) {
-      const nextIndex = nextProps.index;
+    if (props.index !== state.currentStepIndex) {
+      const nextIndex = props.index;
       if (typeof nextIndex === 'number') {
-        const index = nextIndex < 0 ? nextProps.steps.count() + nextIndex : nextIndex;
-        this.setState({ currentStepIndex: index });
+        const index = nextIndex < 0 ? props.steps.count() + nextIndex : nextIndex;
+        return ({ currentStepIndex: index });
       }
     }
   }
+
+  // componentWillReceiveProps(nextProps: Props) {
+  //   if (nextProps.steps !== this.props.steps) {
+  //     const visibleSteps = nextProps.steps.filter(s => typeof s.get('visible') === 'undefined' || s.get('visible'));
+
+  //     this.setState({
+  //       steps: visibleSteps,
+  //     });
+  //   }
+
+  //   if (nextProps.index !== this.props.index) {
+  //     const nextIndex = nextProps.index;
+  //     if (typeof nextIndex === 'number') {
+  //       const index = nextIndex < 0 ? nextProps.steps.count() + nextIndex : nextIndex;
+  //       this.setState({ currentStepIndex: index });
+  //     }
+  //   }
+  // }
 
   // Check to see if we have an onEnter callback defined on first step
   componentDidMount() {
