@@ -192,8 +192,8 @@ export default class MegaWizardContainer extends React.Component<Props,State> {
       // Current step has success label, previous steps are primary
       // future steps are default
       const numberClasses = ClassNames('label', {
-        'label-primary': index < this.state.currentStepIndex,
-        'label-success': index === this.state.currentStepIndex
+        'label-primary': step.get('isComplete'),
+        'label-success': !step.get('isComplete'), 
       });
 
       const jumpButton = currentStep.get('allowJumpFrom', false) && step.get('allowJumpTo', false)
@@ -205,10 +205,14 @@ export default class MegaWizardContainer extends React.Component<Props,State> {
       )
       : null;
 
+      const rowStyle = index === this.state.currentStepIndex 
+        ? {backgroundColor: '#1bb3934f'}
+        : {};
+
       return (
-        <li key={'stepName-' + index} className={nameClasses}>
-          <span className={numberClasses}>{index + 1}</span><span className='room-left'> {step.get('text')}</span> 
+        <li key={'stepName-' + index} className={nameClasses} style={rowStyle}>
           {jumpButton}
+          <span className={numberClasses}>{index + 1}</span><span className='room-left'> {step.get('text')}</span> 
         </li>
       );
     });

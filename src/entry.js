@@ -7,6 +7,4 @@
 // Local
 import Container from './Container';
 
-console.log('Like a robot wizard, but more Mega.');
-
 module.exports = Container;
