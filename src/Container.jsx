@@ -16,6 +16,12 @@ type Props = {
   
   // Optional
 
+  // Defaults to true. If false, cancel button is not visible
+  cancelAllowed: bool,
+  
+  // Override for complete button text
+  cancelButtonText: string,
+
   // Override for complete button text
   completeButtonText: string,
 
@@ -47,6 +53,9 @@ type Props = {
   // Optional override for previous button icon classes
   prevButtonIconClasses?: string,
 
+  // onCancel: called when the cancel button is clicked. If not provided, cancel will not be allowed
+  onCancel?: (Immutable.Map<string,*>) => void,
+  
   // onComplete: called when the final wizard complete button is clicked
   onComplete?: (Immutable.Map<string,*>) => void,
 
@@ -107,7 +116,7 @@ export default class MegaWizardContainer extends React.Component<Props,State> {
 
   // Because we have steps in state, we need watch for updates
   // and re-filter
-  componentWillReceiveProps(nextProps: Props) {
+  componentDidUpdate(nextProps: Props) {
     if (nextProps.steps !== this.props.steps) {
       const visibleSteps = nextProps.steps.filter(s => typeof s.get('visible') === 'undefined' || s.get('visible'));
 
@@ -144,6 +153,22 @@ export default class MegaWizardContainer extends React.Component<Props,State> {
 
   // Check for step changes and fire optional callbacks
   componentDidUpdate(prevProps: Props, prevState: State) {
+    if (prevProps.steps !== this.props.steps) {
+      const visibleSteps = this.props.steps.filter(s => typeof s.get('visible') === 'undefined' || s.get('visible'));
+
+      this.setState({
+        steps: visibleSteps,
+      });
+    }
+
+    if (prevProps.index !== this.props.index) {
+      const nextIndex = this.props.index;
+      if (typeof nextIndex === 'number') {
+        const index = nextIndex < 0 ? this.props.steps.count() + nextIndex : nextIndex;
+        this.setState({ currentStepIndex: index });
+      }
+    }
+
     if (prevState.currentStepIndex !== this.state.currentStepIndex) {
       const currentStepIndex = this.state.currentStepIndex;
       const currentStep = this.state.steps.get(currentStepIndex, Immutable.Map());
@@ -189,30 +214,27 @@ export default class MegaWizardContainer extends React.Component<Props,State> {
         'text-bold': index === this.state.currentStepIndex
       });
 
-      // Current step has success label, previous steps are primary
+      // Current step has success badge, previous steps are primary
       // future steps are default
-      const numberClasses = ClassNames('label', {
-        'label-primary': step.get('isComplete'),
-        'label-success': !step.get('isComplete'), 
+      const numberClasses = ClassNames('badge', {
+        'badge-success': index < this.state.currentStepIndex,
+        'badge-primary': index === this.state.currentStepIndex,
+        'badge-light': index > this.state.currentStepIndex,
       });
 
       const jumpButton = currentStep.get('allowJumpFrom', false) && step.get('allowJumpTo', false)
       ? (
-        <button className='btn btn-xs btn-white pull-right'
+        <button className='btn btn-sm btn-outline-secondary float-right'
           onClick={(e: SyntheticInputEvent<*>) => this.handleJumpStepClick(e, index)}>
-          <i className='fa fa-fw fa-history'></i> Jump
+          <i className='far fa-fw fa-history'></i> Jump
           </button>
       )
       : null;
 
-      const rowStyle = index === this.state.currentStepIndex 
-        ? {backgroundColor: '#1bb3934f'}
-        : {};
-
       return (
-        <li key={'stepName-' + index} className={nameClasses} style={rowStyle}>
+        <li key={'stepName-' + index} className={nameClasses}>
+          <span className='mr-2' style={{fontSize: '1.5em'}}><span className={numberClasses}>&nbsp;{index + 1}&nbsp;</span></span> {step.get('text')}
           {jumpButton}
-          <span className={numberClasses}>{index + 1}</span><span className='room-left'> {step.get('text')}</span> 
         </li>
       );
     });
@@ -223,39 +245,42 @@ export default class MegaWizardContainer extends React.Component<Props,State> {
     return (
       <div className='megawizard'>
         <div className='row'>
-          <div className='col-sm-4'>
+          <div className='col-4'>
             <ul className='list-group'>
               {stepNames}
             </ul>
           </div>
-          <div className='col-sm-8'>
+          <div className='col'>
             <div className='row'>
-              <div className='col-sm-12 text-center'>
+              <div className='col-12 text-center'>
                 <h2>{this.state.currentStepIndex + 1}. {currentStep.get('text')}</h2>
               </div>
             </div>
-            <div className='row' style={{marginTop: '1em'}}>
+            <div className='row mt-1 mb-4 justify-content-center'>
               {onDisplay}
             </div>
-            <Buttons 
-              completeButtonClasses={currentStep.get('completeButtonClasses') || this.props.completeButtonClasses}
-              completeButtonIconClasses={currentStep.get('completeButtonIconClasses') || this.props.completeButtonIconClasses}
-              completeButtonText={currentStep.get('completeButtonText') || this.props.completeButtonText}
-              nextStepAllowed={nextStepAllowed}
-              nextButtonClasses={currentStep.get('nextButtonClasses') || this.props.nextButtonClasses}
-              nextButtonIconClasses={currentStep.get('nextButtonIconClasses') || this.props.nextButtonIconClasses}
-              nextButtonText={currentStep.get('nextButtonText') || this.props.nextButtonText}
-              onPreviousStepClick={this.handlePreviousStepClick}
-              onNextStepClick={this.handleNextStepClick}
-              onCompleteStepClick={this.handleCompleteStepClick}
-              prevStepAllowed={prevStepAllowed}
-              prevButtonClasses={currentStep.get('prevButtonClasses') || this.props.prevButtonClasses}
-              prevButtonIconClasses={currentStep.get('prevButtonIconClasses') || this.props.prevButtonIconClasses}
-              prevButtonText={currentStep.get('prevButtonText') || this.props.prevButtonText}
-              showCompleteButton={this.state.currentStepIndex === this.state.steps.count() -1}
-            />
           </div>
         </div>
+        <Buttons 
+          cancelAllowed={this.props.cancelAllowed}
+          cancelButtonText={this.props.cancelButtonText}
+          completeButtonClasses={currentStep.get('completeButtonClasses') || this.props.completeButtonClasses}
+          completeButtonIconClasses={currentStep.get('completeButtonIconClasses') || this.props.completeButtonIconClasses}
+          completeButtonText={currentStep.get('completeButtonText') || this.props.completeButtonText}
+          nextStepAllowed={nextStepAllowed}
+          nextButtonClasses={currentStep.get('nextButtonClasses') || this.props.nextButtonClasses}
+          nextButtonIconClasses={currentStep.get('nextButtonIconClasses') || this.props.nextButtonIconClasses}
+          nextButtonText={currentStep.get('nextButtonText') || this.props.nextButtonText}
+          onPreviousStepClick={this.handlePreviousStepClick}
+          onCancelClick={this.handleCancelClick}
+          onCompleteStepClick={this.handleCompleteStepClick}
+          onNextStepClick={this.handleNextStepClick}
+          prevStepAllowed={prevStepAllowed}
+          prevButtonClasses={currentStep.get('prevButtonClasses') || this.props.prevButtonClasses}
+          prevButtonIconClasses={currentStep.get('prevButtonIconClasses') || this.props.prevButtonIconClasses}
+          prevButtonText={currentStep.get('prevButtonText') || this.props.prevButtonText}
+          showCompleteButton={this.state.currentStepIndex === this.state.steps.count() -1}
+        />
       </div>
     );
   }
@@ -327,6 +352,14 @@ export default class MegaWizardContainer extends React.Component<Props,State> {
     }
   }
 
+  handleCancelClick(e: SyntheticInputEvent<*>) {
+    e.stopPropagation();
+    const currentStep = this.state.steps.get(this.state.currentStepIndex);
+
+    if (currentStep && this.props.onCancel)
+      this.props.onCancel(currentStep);
+  }
+
   handleCompleteStepClick(e: SyntheticInputEvent<*>) {
     e.stopPropagation();
     const currentStep = this.state.steps.get(this.state.currentStepIndex);
@@ -348,6 +381,8 @@ export default class MegaWizardContainer extends React.Component<Props,State> {
 }
 
 MegaWizardContainer.defaultProps = {
+  cancelAllowed: true,
+  cancelButtonText: 'Cancel',
   completeButtonText: 'Done',
   nextButtonText: 'Next',
   prevButtonText: 'Previous',

@@ -1,3 +1,4 @@
+//@flow
 /* MegaWizard - Copyright 2015 Zeroarc Software, LLC
  *
  * Entry point into MegaWizard
