@@ -1,12 +1,11 @@
-// @flow
-// MegaWizard - Copyright 2017 Zeroarc Software, LLC
+// Tabletable - Copyright 2021 Zeroarc Software, LLC
 'use strict';
 
-import React from 'react';
+import React, { SyntheticEvent } from 'react';
 import ClassNames from 'classnames';
 
 type Props = {
-  cancelAllowed: bool,
+  cancelAllowed: boolean,
   cancelButtonClasses?: string,
   cancelButtonIconClasses?: string,
   cancelButtonText: string,
@@ -16,16 +15,16 @@ type Props = {
   nextButtonClasses?: string,
   nextButtonIconClasses?: string,
   nextButtonText: string,
-  nextStepAllowed: bool,
-  onCancelClick: (e: SyntheticInputEvent<*>) => void,
-  onCompleteStepClick: (e: SyntheticInputEvent<*>) => void,
-  onNextStepClick: (e: SyntheticInputEvent<*>) => void,
-  onPreviousStepClick: (e: SyntheticInputEvent<*>) => void,
+  nextStepAllowed: boolean,
+  onCancelClick: (e: SyntheticEvent) => void,
+  onCompleteStepClick: (e: SyntheticEvent) => void,
+  onNextStepClick: (e: SyntheticEvent) => void,
+  onPreviousStepClick: (e: SyntheticEvent) => void,
   prevButtonClasses?: string,
   prevButtonIconClasses?: string,
   prevButtonText: string,
-  prevStepAllowed: bool,
-  showCompleteButton: bool,
+  prevStepAllowed: boolean,
+  showCompleteButton: boolean,
 };
 
 const Buttons = ({
