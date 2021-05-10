@@ -97,24 +97,6 @@ export const MegaWizardContainer = (props: Props) => {
   });
   const prevStepIndex = prevStepIndexRef.current;
 
-  
-  // Check to see if we have an onEnter callback defined on first step
-  // and check to see if we have an onExit callback defined on current step
-  // before unmounting
-  useEffect(() => {
-    const currentStep = steps.get(currentStepIndex, Immutable.Map());
-    const onEnter =  currentStep.get('onEnter');
-    if (typeof onEnter === 'function')
-      onEnter();
-
-    return () => {
-      const currentStep = steps.get(currentStepIndex, Immutable.Map());
-      const onExit = currentStep.get('onExit');
-      if (typeof onExit === 'function')
-        onExit();
-    };
-  }, []);
-
   // Because we have steps in state, we need watch for updates
   // and re-filter
   useEffect(() => {
@@ -149,12 +131,23 @@ export const MegaWizardContainer = (props: Props) => {
 
     // Fire entry/exit steps if they exist for previous and current states
     const onExit = prevStep.get('onExit');
-    if (typeof onExit === 'function')
+    if (typeof onExit === 'function') {
       onExit();
+    }
+
 
     const onEnter = currentStep.get('onEnter');
-    if (typeof onEnter === 'function')
+    if (typeof onEnter === 'function') {
       onEnter();
+    }
+      
+    return () => {
+      const currentStep = steps.get(currentStepIndex, Immutable.Map());
+      const onExit = currentStep.get('onExit');
+      if (typeof onExit === 'function') {
+        onExit();
+      }
+    };
   }, [currentStepIndex]);
 
   
