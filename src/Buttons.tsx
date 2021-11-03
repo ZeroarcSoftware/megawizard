@@ -62,16 +62,16 @@ const Buttons = ({
 
   return (
     <div className='d-flex justify-content-between align-items-end mt-3'>
-      <button className={`mr-auto ${cancelButtonClasses}`} disabled={!cancelAllowed} onClick={onCancelClick} tabIndex={-1}>
+      <button className={`me-auto ${cancelButtonClasses}`} disabled={!cancelAllowed} onClick={onCancelClick} tabIndex={-1}>
         <i className={cancelButtonIconClasses}></i> {cancelButtonText}
       </button>
       <button className={prevButtonClasses} disabled={!prevStepAllowed} onClick={onPreviousStepClick} tabIndex={11}>
         <i className={prevButtonIconClasses}></i> {prevButtonText}
       </button>
-      <button className={`ml-3 ${_nextButtonClasses}`} disabled={!nextStepAllowed} onClick={onNextStepClick} tabIndex={10}>
+      <button className={`ms-3 ${_nextButtonClasses}`} disabled={!nextStepAllowed} onClick={onNextStepClick} tabIndex={10}>
         <i className={nextButtonIconClasses}></i> {nextButtonText}
       </button>
-      <button className={`ml-3 ${_completeButtonClasses}`} disabled={!nextStepAllowed} onClick={onCompleteStepClick} tabIndex={10}>
+      <button className={`ms-3 ${_completeButtonClasses}`} disabled={!nextStepAllowed} onClick={onCompleteStepClick} tabIndex={10}>
         <i className={completeButtonIconClasses}></i> {completeButtonText}
       </button>
     </div>

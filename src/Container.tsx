@@ -272,7 +272,7 @@ export const MegaWizardContainer = (props: Props) => {
 
     const jumpButton = currentStep.get('allowJumpFrom', false) && step.get('allowJumpTo', false)
     ? (
-      <button className='btn btn-sm btn-outline-secondary float-right'
+      <button className='btn btn-sm btn-outline-secondary float-end'
         onClick={(e: SyntheticEvent) => handleJumpStepClick(e, index)}>
         <i className='far fa-fw fa-history'></i> Jump
         </button>
@@ -281,7 +281,7 @@ export const MegaWizardContainer = (props: Props) => {
 
     return (
       <li key={'stepName-' + index} className={nameClasses}>
-        <span className='mr-2' style={{fontSize: '1.5em'}}><span className={numberClasses}>&nbsp;{index + 1}&nbsp;</span></span> {step.get('text')}
+        <span className='me-2' style={{fontSize: '1.5em'}}><span className={numberClasses}>&nbsp;{index + 1}&nbsp;</span></span> {step.get('text')}
         {jumpButton}
       </li>
     );
