@@ -265,9 +265,9 @@ export const MegaWizardContainer = (props: Props) => {
     // Current step has success badge, previous steps are primary
     // future steps are default
     const numberClasses = ClassNames('badge', {
-      'badge-success': index < currentStepIndex,
-      'badge-primary': index === currentStepIndex,
-      'badge-light': index > currentStepIndex,
+      'bg-success': index < currentStepIndex,
+      'bg-primary': index === currentStepIndex,
+      'bg-light': index > currentStepIndex,
     });
 
     const jumpButton = currentStep.get('allowJumpFrom', false) && step.get('allowJumpTo', false)
