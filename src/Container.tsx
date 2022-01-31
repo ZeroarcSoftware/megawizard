@@ -65,7 +65,6 @@ type Props = {
 } & typeof defaultProps;
 
 const defaultProps = {
-  cancelAllowed: true,
   cancelButtonText: 'Cancel',
   completeButtonText: 'Done',
   nextButtonText: 'Next',
@@ -255,6 +254,8 @@ export const MegaWizardContainer = (props: Props) => {
   const prevStepAllowed = currentStepIndex !== 0 &&
     (typeof currentStep.get('prevValidator') === 'undefined' || !!currentStep.get('prevValidator'));
 
+  const cancelAllowed = typeof currentStep.get('cancelAllowed') === 'undefined' || !!currentStep.get('cancelAllowed');
+
   // Build out summary column of steps
   const stepNames = steps.map((step,index) => {
     // Current step is highlighted in bold
@@ -310,7 +311,7 @@ export const MegaWizardContainer = (props: Props) => {
         </div>
       </div>
       <Buttons 
-        cancelAllowed={props.cancelAllowed}
+        cancelAllowed={cancelAllowed}
         cancelButtonText={props.cancelButtonText}
         completeButtonClasses={currentStep.get('completeButtonClasses') || props.completeButtonClasses}
         completeButtonIconClasses={currentStep.get('completeButtonIconClasses') || props.completeButtonIconClasses}
