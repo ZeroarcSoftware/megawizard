@@ -1,7 +1,7 @@
 // Tabletable - Copyright 2021 Zeroarc Software, LLC
 'use strict';
 
-import React, { SyntheticEvent, useEffect, useRef, useState } from 'react';
+import React, { createRef, SyntheticEvent, useEffect, useRef, useState } from 'react';
 import Immutable from 'immutable';
 import ClassNames from 'classnames';
 
@@ -75,6 +75,8 @@ export const MegaWizardContainer = (props: Props) => {
   props = {...defaultProps, ...props}
 
   const visibleSteps = props.steps.filter(s => typeof s.get('visible') === 'undefined' || s.get('visible'));
+  const stepRefs = useRef<React.RefObject<HTMLLIElement>[]>([]);
+  stepRefs.current = props.steps.map((s, i) => stepRefs.current[i]! ?? createRef()).toArray();
 
   //#region Hooks
   
@@ -166,6 +168,8 @@ export const MegaWizardContainer = (props: Props) => {
       props.onStepShouldChange(index);
     else
       setCurrentStepIndex(index);
+
+    stepRefs.current[currentStepIndex].current?.scrollIntoView({behavior: 'smooth', block: 'center' });
   };
 
   const handlePreviousStepClick = (e: SyntheticEvent) => {
@@ -189,6 +193,9 @@ export const MegaWizardContainer = (props: Props) => {
         props.onStepShouldChange(currentStepIndex - 1);
       else
         setCurrentStepIndex(currentStepIndex - 1);
+
+      console.log('scrollz')
+      stepRefs.current[currentStepIndex].current?.scrollIntoView({behavior: 'smooth', block: 'center' });
     }
   }
 
@@ -213,6 +220,8 @@ export const MegaWizardContainer = (props: Props) => {
         props.onStepShouldChange(currentStepIndex + 1);
       else
         setCurrentStepIndex(currentStepIndex + 1);
+
+      stepRefs.current[currentStepIndex].current?.scrollIntoView({behavior: 'smooth', block: 'center' });
     }
   };
 
@@ -242,8 +251,6 @@ export const MegaWizardContainer = (props: Props) => {
 
     currentStep && props.onComplete && props.onComplete(currentStep);
   };
-
- 
 
   const currentStep = steps.get(currentStepIndex);
   if (!currentStep) throw 'Invalid state, currentStep not found for index ' + currentStepIndex;
@@ -281,7 +288,7 @@ export const MegaWizardContainer = (props: Props) => {
     : null;
 
     return (
-      <li key={'stepName-' + index} className={nameClasses}>
+      <li key={'stepName-' + index} className={nameClasses} ref={stepRefs.current[index]}>
         <span className='me-2' style={{fontSize: '1.5em'}}><span className={numberClasses}>&nbsp;{index + 1}&nbsp;</span></span> {step.get('text')}
         {jumpButton}
       </li>
@@ -294,7 +301,7 @@ export const MegaWizardContainer = (props: Props) => {
   return (
     <div className='megawizard'>
       <div className='row'>
-        <div className='col-4'>
+        <div className='col-4 overflow-auto' style={{maxHeight: '50vh'}}>
           <ul className='list-group'>
             {stepNames}
           </ul>
@@ -310,26 +317,30 @@ export const MegaWizardContainer = (props: Props) => {
           </div>
         </div>
       </div>
-      <Buttons 
-        cancelAllowed={cancelAllowed}
-        cancelButtonText={props.cancelButtonText}
-        completeButtonClasses={currentStep.get('completeButtonClasses') || props.completeButtonClasses}
-        completeButtonIconClasses={currentStep.get('completeButtonIconClasses') || props.completeButtonIconClasses}
-        completeButtonText={currentStep.get('completeButtonText') || props.completeButtonText}
-        nextStepAllowed={nextStepAllowed}
-        nextButtonClasses={currentStep.get('nextButtonClasses') || props.nextButtonClasses}
-        nextButtonIconClasses={currentStep.get('nextButtonIconClasses') || props.nextButtonIconClasses}
-        nextButtonText={currentStep.get('nextButtonText') || props.nextButtonText}
-        onPreviousStepClick={handlePreviousStepClick}
-        onCancelClick={handleCancelClick}
-        onCompleteStepClick={handleCompleteStepClick}
-        onNextStepClick={handleNextStepClick}
-        prevStepAllowed={prevStepAllowed}
-        prevButtonClasses={currentStep.get('prevButtonClasses') || props.prevButtonClasses}
-        prevButtonIconClasses={currentStep.get('prevButtonIconClasses') || props.prevButtonIconClasses}
-        prevButtonText={currentStep.get('prevButtonText') || props.prevButtonText}
-        showCompleteButton={currentStepIndex === steps.count() -1}
-      />
+        <div className='col offset-4'>
+          <div className='row'>
+            <Buttons 
+              cancelAllowed={cancelAllowed}
+              cancelButtonText={props.cancelButtonText}
+              completeButtonClasses={currentStep.get('completeButtonClasses') || props.completeButtonClasses}
+              completeButtonIconClasses={currentStep.get('completeButtonIconClasses') || props.completeButtonIconClasses}
+              completeButtonText={currentStep.get('completeButtonText') || props.completeButtonText}
+              nextStepAllowed={nextStepAllowed}
+              nextButtonClasses={currentStep.get('nextButtonClasses') || props.nextButtonClasses}
+              nextButtonIconClasses={currentStep.get('nextButtonIconClasses') || props.nextButtonIconClasses}
+              nextButtonText={currentStep.get('nextButtonText') || props.nextButtonText}
+              onPreviousStepClick={handlePreviousStepClick}
+              onCancelClick={handleCancelClick}
+              onCompleteStepClick={handleCompleteStepClick}
+              onNextStepClick={handleNextStepClick}
+              prevStepAllowed={prevStepAllowed}
+              prevButtonClasses={currentStep.get('prevButtonClasses') || props.prevButtonClasses}
+              prevButtonIconClasses={currentStep.get('prevButtonIconClasses') || props.prevButtonIconClasses}
+              prevButtonText={currentStep.get('prevButtonText') || props.prevButtonText}
+              showCompleteButton={currentStepIndex === steps.count() -1}
+            />
+        </div>
+      </div>
     </div>
   );
 };

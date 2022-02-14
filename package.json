@@ -1,6 +1,6 @@
 {
   "name": "megawizard",
-  "version": "3.3.0",
+  "version": "3.4.0",
   "description": "Reactjs Step Wizard",
   "main": "dist/Container.js",
   "dependencies": {
@@ -22,7 +22,7 @@
   },
   "scripts": {
     "build": "NODE_ENV=production $(npm bin)/babel src/ -d dist/ --extensions '.ts,.tsx' && tsc",
-    "watch": "$(npm bin)/babel src/ -d dist/ --watch",
+    "watch": "$(npm bin)/babel src/ -d dist/ --watch --extensions '.ts,.tsx'",
     "prepare": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
