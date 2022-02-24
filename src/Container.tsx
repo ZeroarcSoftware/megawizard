@@ -11,7 +11,7 @@ type Props = {
   // Required
   // steps: Wizard steps config object
   steps: Immutable.List<Immutable.Map<string, any>>,
-  
+
   // Optional
 
   // Optional override for complete button classes
@@ -37,31 +37,31 @@ type Props = {
   prevButtonIconClasses?: string,
 
   // onCancel: called when the cancel button is clicked. If not provided, cancel will not be allowed
-  onCancel?: (step: Immutable.Map<string,any>) => void,
-  
+  onCancel?: (step: Immutable.Map<string, any>) => void,
+
   // onComplete: called when the final wizard complete button is clicked
-  onComplete?: (step: Immutable.Map<string,any>) => void,
+  onComplete?: (step: Immutable.Map<string, any>) => void,
 
   // called when step index wants to change
   onStepShouldChange?: (index: number) => void,
 
   // called when any step changes, passes step
-  onStepChanged?: (step: Immutable.Map<string,any>) => void,
+  onStepChanged?: (step: Immutable.Map<string, any>) => void,
 
   // called when any step changes, passes step
-  onNextStepChanged?: (step: Immutable.Map<string,any>) => void,
+  onNextStepChanged?: (step: Immutable.Map<string, any>) => void,
 
   // called when any step changes, passes step
-  onPreviousStepChanged?: (step: Immutable.Map<string,any>) => void,
+  onPreviousStepChanged?: (step: Immutable.Map<string, any>) => void,
 
   // called before any step changes, passes step
-  onStepWillChange?: (step: Immutable.Map<string,any>) => boolean,
+  onStepWillChange?: (step: Immutable.Map<string, any>) => boolean,
 
   // called before next step changes, passes step
-  onStepWillChangeToNext?: (step: Immutable.Map<string,any>) => boolean,
+  onStepWillChangeToNext?: (step: Immutable.Map<string, any>) => boolean,
 
   // called before previous step changes, passes step
-  onStepWillChangeToPrevious?: (step: Immutable.Map<string,any>) => boolean,
+  onStepWillChangeToPrevious?: (step: Immutable.Map<string, any>) => boolean,
 } & typeof defaultProps;
 
 const defaultProps = {
@@ -72,14 +72,14 @@ const defaultProps = {
 };
 
 export const MegaWizardContainer = (props: Props) => {
-  props = {...defaultProps, ...props}
+  props = { ...defaultProps, ...props }
 
   const visibleSteps = props.steps.filter(s => typeof s.get('visible') === 'undefined' || s.get('visible'));
   const stepRefs = useRef<React.RefObject<HTMLLIElement>[]>([]);
   stepRefs.current = props.steps.map((s, i) => stepRefs.current[i]! ?? createRef()).toArray();
 
   //#region Hooks
-  
+
   let index = 0;
   const propsIndex = props.index;
   if (typeof propsIndex === 'number' && propsIndex < 0) {
@@ -91,7 +91,7 @@ export const MegaWizardContainer = (props: Props) => {
 
   const [currentStepIndex, setCurrentStepIndex] = useState(index);
   const [steps, setVisibleSteps] = useState(visibleSteps);
-  
+
   const prevStepIndexRef = useRef<number>(1);
   useEffect(() => {
     prevStepIndexRef.current = currentStepIndex;
@@ -114,12 +114,12 @@ export const MegaWizardContainer = (props: Props) => {
     }
   }, [props.index]);
 
- 
+
   // Check for step changes and fire optional callbacks
   useEffect(() => {
     const currentStep = steps.get(currentStepIndex, Immutable.Map()) as Immutable.Map<string, any>;
     const prevStep = steps.get(prevStepIndex, Immutable.Map());
-    
+
     // Fire global step change callback if it exists
     currentStep && props.onStepChanged && props.onStepChanged(currentStep);
 
@@ -141,7 +141,7 @@ export const MegaWizardContainer = (props: Props) => {
     if (typeof onEnter === 'function') {
       onEnter();
     }
-      
+
     return () => {
       const currentStep = steps.get(currentStepIndex, Immutable.Map());
       const onExit = currentStep.get('onExit');
@@ -151,7 +151,7 @@ export const MegaWizardContainer = (props: Props) => {
     };
   }, [currentStepIndex]);
 
-  
+
   //#endregion
 
   const handleJumpStepClick = (e: SyntheticEvent, index: number) => {
@@ -187,13 +187,13 @@ export const MegaWizardContainer = (props: Props) => {
         if (allowed === false) return;
       }
 
-      if (typeof props.onStepShouldChange === 'function')  
+      if (typeof props.onStepShouldChange === 'function')
         props.onStepShouldChange(currentStepIndex - 1);
       else
         setCurrentStepIndex(currentStepIndex - 1);
 
       console.log('scrollz')
-      stepRefs.current[currentStepIndex].current?.scrollIntoView({behavior: 'smooth', block: 'center' });
+      stepRefs.current[currentStepIndex].current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }
 
@@ -214,12 +214,12 @@ export const MegaWizardContainer = (props: Props) => {
         if (allowed === false) return;
       }
 
-      if (typeof props.onStepShouldChange === 'function')  
+      if (typeof props.onStepShouldChange === 'function')
         props.onStepShouldChange(currentStepIndex + 1);
       else
         setCurrentStepIndex(currentStepIndex + 1);
 
-      stepRefs.current[currentStepIndex].current?.scrollIntoView({behavior: 'smooth', block: 'center' });
+      stepRefs.current[currentStepIndex].current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   };
 
@@ -262,7 +262,7 @@ export const MegaWizardContainer = (props: Props) => {
   const cancelAllowed = typeof currentStep.get('cancelAllowed') === 'undefined' || !!currentStep.get('cancelAllowed');
 
   // Build out summary column of steps
-  const stepNames = steps.map((step,index) => {
+  const stepNames = steps.map((step, index) => {
     // Current step is highlighted in bold
     const nameClasses = ClassNames('list-group-item', {
       'text-bold': index === currentStepIndex
@@ -277,17 +277,17 @@ export const MegaWizardContainer = (props: Props) => {
     });
 
     const jumpButton = currentStep.get('allowJumpFrom', false) && step.get('allowJumpTo', false)
-    ? (
-      <button className='btn btn-sm btn-outline-secondary float-end'
-        onClick={(e: SyntheticEvent) => handleJumpStepClick(e, index)}>
-        <i className='far fa-fw fa-history'></i> Jump
+      ? (
+        <button className='btn btn-sm btn-outline-secondary float-end'
+          onClick={(e: SyntheticEvent) => handleJumpStepClick(e, index)}>
+          <i className='far fa-fw fa-history'></i> Jump
         </button>
-    )
-    : null;
+      )
+      : null;
 
     return (
       <li key={'stepName-' + index} className={nameClasses} ref={stepRefs.current[index]}>
-        <span className='me-2' style={{fontSize: '1.5em'}}><span className={numberClasses}>&nbsp;{index + 1}&nbsp;</span></span> {step.get('text')}
+        <span className='me-2' style={{ fontSize: '1.5em' }}><span className={numberClasses}>&nbsp;{index + 1}&nbsp;</span></span> {step.get('text')}
         {jumpButton}
       </li>
     );
@@ -299,12 +299,12 @@ export const MegaWizardContainer = (props: Props) => {
   return (
     <div className='megawizard'>
       <div className='row'>
-        <div className='col-4 overflow-auto' style={{maxHeight: '50vh'}}>
+        <div className='col-4 overflow-auto' style={{ maxHeight: '50vh' }}>
           <ul className='list-group'>
             {stepNames}
           </ul>
         </div>
-        <div className='col'>
+        <div className='col pb-4'>
           <div className='row'>
             <div className='col-12 text-center'>
               <h2>{currentStepIndex + 1}. {currentStep.get('text')}</h2>
@@ -315,9 +315,9 @@ export const MegaWizardContainer = (props: Props) => {
           </div>
         </div>
       </div>
-      <div className='row' style={{marginTop: '-49px'}}>
+      <div className='row' style={{ marginTop: '-49px' }}>
         <div className='col offset-4'>
-          <Buttons 
+          <Buttons
             cancelAllowed={cancelAllowed}
             cancelButtonText={props.cancelButtonText}
             completeButtonClasses={currentStep.get('completeButtonClasses') || props.completeButtonClasses}
@@ -335,7 +335,7 @@ export const MegaWizardContainer = (props: Props) => {
             prevButtonClasses={currentStep.get('prevButtonClasses') || props.prevButtonClasses}
             prevButtonIconClasses={currentStep.get('prevButtonIconClasses') || props.prevButtonIconClasses}
             prevButtonText={currentStep.get('prevButtonText') || props.prevButtonText}
-            showCompleteButton={currentStepIndex === steps.count() -1}
+            showCompleteButton={currentStepIndex === steps.count() - 1}
           />
         </div>
       </div>
