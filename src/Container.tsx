@@ -192,7 +192,6 @@ export const MegaWizardContainer = (props: Props) => {
       else
         setCurrentStepIndex(currentStepIndex - 1);
 
-      console.log('scrollz')
       stepRefs.current[currentStepIndex].current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }
