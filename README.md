@@ -90,7 +90,7 @@ Steps definitions are a flexible way to get some fairly complex behaviors into t
 ### Contrived Example:
 
     render() {
-      let stepDef = Immutable.fromJS([
+      let stepDef = fromJS([
         {
           name: 'enterName',
           text: `Enter a name for widget ${this.state.widgetId}`,

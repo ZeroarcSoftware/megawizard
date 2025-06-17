@@ -2,15 +2,16 @@
 'use strict';
 
 import React, { createRef, SyntheticEvent, useEffect, useRef, useState } from 'react';
-import Immutable from 'immutable';
+
 import ClassNames from 'classnames';
+import { List, Map } from 'immutable';
 
 import Buttons from './Buttons';
 
 type Props = {
   // Required
   // steps: Wizard steps config object
-  steps: Immutable.List<Immutable.Map<string, any>>,
+  steps: List<Map<string, any>>,
 
   // Optional
 
@@ -37,31 +38,31 @@ type Props = {
   prevButtonIconClasses?: string,
 
   // onCancel: called when the cancel button is clicked. If not provided, cancel will not be allowed
-  onCancel?: (step: Immutable.Map<string, any>) => void,
+  onCancel?: (step: Map<string, any>) => void,
 
   // onComplete: called when the final wizard complete button is clicked
-  onComplete?: (step: Immutable.Map<string, any>) => void,
+  onComplete?: (step: Map<string, any>) => void,
 
   // called when step index wants to change
   onStepShouldChange?: (index: number) => void,
 
   // called when any step changes, passes step
-  onStepChanged?: (step: Immutable.Map<string, any>) => void,
+  onStepChanged?: (step: Map<string, any>) => void,
 
   // called when any step changes, passes step
-  onNextStepChanged?: (step: Immutable.Map<string, any>) => void,
+  onNextStepChanged?: (step: Map<string, any>) => void,
 
   // called when any step changes, passes step
-  onPreviousStepChanged?: (step: Immutable.Map<string, any>) => void,
+  onPreviousStepChanged?: (step: Map<string, any>) => void,
 
   // called before any step changes, passes step
-  onStepWillChange?: (step: Immutable.Map<string, any>) => boolean,
+  onStepWillChange?: (step: Map<string, any>) => boolean,
 
   // called before next step changes, passes step
-  onStepWillChangeToNext?: (step: Immutable.Map<string, any>) => boolean,
+  onStepWillChangeToNext?: (step: Map<string, any>) => boolean,
 
   // called before previous step changes, passes step
-  onStepWillChangeToPrevious?: (step: Immutable.Map<string, any>) => boolean,
+  onStepWillChangeToPrevious?: (step: Map<string, any>) => boolean,
 } & typeof defaultProps;
 
 const defaultProps = {
@@ -117,8 +118,8 @@ export const MegaWizardContainer = (props: Props) => {
 
   // Check for step changes and fire optional callbacks
   useEffect(() => {
-    const currentStep = steps.get(currentStepIndex, Immutable.Map()) as Immutable.Map<string, any>;
-    const prevStep = steps.get(prevStepIndex, Immutable.Map());
+    const currentStep = steps.get(currentStepIndex, Map()) as Map<string, any>;
+    const prevStep = steps.get(prevStepIndex, Map());
 
     // Fire global step change callback if it exists
     currentStep && props.onStepChanged && props.onStepChanged(currentStep);
@@ -143,7 +144,7 @@ export const MegaWizardContainer = (props: Props) => {
     }
 
     return () => {
-      const currentStep = steps.get(currentStepIndex, Immutable.Map());
+      const currentStep = steps.get(currentStepIndex, Map());
       const onExit = currentStep.get('onExit');
       if (typeof onExit === 'function') {
         onExit();
