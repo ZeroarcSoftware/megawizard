@@ -1,3 +1,7 @@
+# THIS REPOSITORY IS NO LONGER MAINTAINED
+
+Zeroarc no longer uses this component and it is no longer maintained.
+
 # MegaWizard
 
 ## React Wizard Component
